@@ -1,40 +1,48 @@
 /* タイピングゲーム全体 */
 body {
- font-size: 6em; 
- text-align: center;
+  font-size: 6em; /* 画面デモ用に大きめならOK */
+  text-align: center;
 }
 
-/* ゲームの残り秒数が表示されるタイマーの領域 */
+/* カウントダウン */
 .count {
- margin: 0;
- font-weight: bold;
- color: #888;
-}
-
-/* テキストが表示される領域 */
-.wrap {
- margin-top: 20px;
- padding: 80px 40px;
- background-color: #666;
- font-weight: bold;
- color: #fff;
-}
-
-/* 正しくタイプされた場合のテキスト */
-.typed {
- color: lightgreen;
-}
-
-/* ミスタイプの場合の背景 */
-.mistyped {
- background-color: red;
-}
-
-/* ゲームテキスト部分 */
-
-/* タイプ数表示 */
-#score-display {
-  font-size: 1em;
-  color: #888;
   margin: 0;
+  font-weight: bold;
+  color: #888;
+}
+
+/* タイピングエリア */
+.wrap {
+  margin-top: 20px;
+  padding: 80px 40px;
+  background-color: #666;
+  font-weight: bold;
+  color: #fff;
+
+  /* ← body の 6em を引き継がないよう、基準を戻す */
+  font-size: 16px;   /* ベース */
+  line-height: 1.6;
+}
+
+/* 正しくタイプされたテキスト */
+.typed { color: lightgreen; }
+
+/* ミスタイプ（使うならJSで付け外し） */
+.mistyped { background-color: red; }
+
+/* タイプ数表示（wrap 直下に置く前提） */
+#score-display {
+  display: block;        /* 改行して“下”に出す */
+  margin: 16px 0 0;      /* 上だけ余白 */
+  font-size: 0.875rem;   /* wrap=16px基準で14px相当 */
+  color: #ccc;           /* 背景#666上での視認性を少しUP */
+  font-weight: normal;
+  opacity: 0.9;
+}
+
+/* お好みで：スコアのラベルを付けたいとき */
+#score-display::before {
+  content: "タイプ数：";
+  margin-right: 0.25em;
+  opacity: 0.9;
 }
