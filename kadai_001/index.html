@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
- <title>タイピングゲーム</title>
- <meta charset="UTF-8">
- <meta name="description" content="【JavaScript応用編】簡易的なタイピングゲームです。">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="stylesheet" href="style.css">
+  <title>タイピングゲーム</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="【JavaScript応用編】簡易的なタイピングゲームです。">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <p id="count" class="count">60</p>
+
+  <!-- タイピングエリア（wrap）直下にタイプ数表示を配置 -->
   <div id="wrap" class="wrap">
-    <span id="typed" class="typed"></span><span id="untyped"></span>
-    <!--<span id="typed" class="typed">He</span><span id="untyped">llo World</span>-->
+    <span id="typed" class="typed"></span>
+    <span id="untyped"></span>
+    <p id="score-display">0</p>
   </div>
 
-  <span id="typed" class="typed"></span><span id="untyped"></span>
-  <p id="score-display">0</p> 
+  <!-- ※ 重複していた typed / untyped は削除済み -->
   <button id="start">スタート</button>
-  <script type="text/javascript" src="main.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
