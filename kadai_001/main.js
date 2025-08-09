@@ -96,7 +96,7 @@ const gameOver = id => {
 };
 
 // カウントダウンタイマー
-const timer = () => {
+const Timer = () => {
   let time = Number(count.textContent);
 
   const id = setInterval(() => {
@@ -128,3 +128,51 @@ start.addEventListener('click', () => {
 
 // 初期表示
 untypedfield.textContent = 'スタートボタンで開始';
+
+// タイマー終了時の処理：エリア内に「タイムアップ！」を表示 → 10ms 後に判定
+const gameover = (id) => {
+  clearInterval(id);
+
+  // タイピングエリアに表示（ダイアログではなく）
+  typedfield.textContent   = '';
+  untypedfield.textContent = 'タイムアップ！';
+
+  // 10ms 後にゲーム判定ダイアログ
+  setTimeout(() => {
+    const result = confirm(rankCheck(score));
+    if (result === true) {
+      window.location.reload();
+    }
+  }, 10);
+};
+
+const timer = () => {
+  let time = Number(count.textContent);
+  const id = setInterval(() => {
+    time--;
+    count.textContent = time;
+
+    if (time <= 0) {
+      gameOver(id); // ← ここで呼ぶ
+    }
+  }, 1000);
+};
+
+const Gameover = (id) => {
+  clearInterval(id);
+
+  // タイピングエリアの文字を「タイムアップ！」に
+  typedfield.textContent   = '';
+  untypedfield.textContent = 'タイムアップ！';
+
+  // スコア表示も非表示にする
+  scoreDisplay.style.display = 'none';
+
+  // 10ms 後にゲーム結果ダイアログTo
+  setTimeout(() => {
+    const result = confirm(rankCheck(score));
+    if (result === true) {
+      window.location.reload();
+    }
+  }, 10);
+};
