@@ -5,10 +5,11 @@ let score = 0;
 
 // 必要なHTML要素の取得
 const untypedfield = document.getElementById('untyped');
-const typedfield = document.getElementById('typed');
-const wrap = document.getElementById('wrap');
-const start = document.getElementById('start');
-const count = document.getElementById('count');
+const typedfield   = document.getElementById('typed');
+const wrap         = document.getElementById('wrap');
+const start        = document.getElementById('start');
+const count        = document.getElementById('count');
+const scoreDisplay = document.getElementById('score-display'); // ★ 追加：スコア表示
 
 // 複数のテキストを格納する配列
 const textLists = [
@@ -29,138 +30,101 @@ const textLists = [
 
 // ランダムなテキストを表示
 const createText = () => {
-
-  // 正タイプした文字列をクリア
   typed = '';
   typedfield.textContent = typed;
 
-  // 配列のインデックス数からランダムな数値を生成する
-  let random = Math.floor(Math.random() * textLists.length);
-
-  // 配列からランダムにテキストを取得し画面に表示する
+  const random = Math.floor(Math.random() * textLists.length);
   untyped = textLists[random];
   untypedfield.textContent = untyped;
 };
 
-// キー入力の判定
+// キー入力の判定（★ここに一本化）
 const keyPress = e => {
-
-  // 誤タイプの場合
-  if(e.key !== untyped.substring(0, 1)) {
+  // 誤タイプ
+  if (e.key !== untyped.substring(0, 1)) {
     wrap.classList.add('mistyped');
-    // 100ms後に背景色を元に戻す
     setTimeout(() => {
       wrap.classList.remove('mistyped');
     }, 100);
     return;
   }
 
-  // 正タイプの場合
-   // スコアのインクリメント
-  score++;
+  // 正タイプ
+  score++;                          // ★ 加点
+  scoreDisplay.textContent = score; // ★ スコア反映
+
   typed += untyped.substring(0, 1);
   untyped = untyped.substring(1);
-  typedfield.textContent = typed;
+  typedfield.textContent   = typed;
   untypedfield.textContent = untyped;
 
-  // テキストがなくなったら新しいテキストを表示
-  if(untyped === '') {
+  // テキストを打ち切ったら次へ
+  if (untyped === '') {
     createText();
   }
 };
 
 // タイピングスキルのランクを判定
 const rankCheck = score => {
-
- // テキストを格納する変数を作る
   let text = '';
- 
-  // スコアに応じて異なるメッセージを変数textに格納する
-  if(score < 100) {
+  if (score < 100) {
     text = `あなたのランクはCです。\nBランクまであと${100 - score}文字です。`;
-  } else if(score < 200) {
-    text = `あなたのランクはBです。\nAランクまであと${200 - score}文字です。`;    
-  } else if(score < 300) {
-    text = `あなたのランクはAです。\nSランクまであと${300 - score}文字です。`;    
-  } else if(score >= 300) {
-    text = `あなたのランクはSです。\nおめでとうございます!`;    
+  } else if (score < 200) {
+    text = `あなたのランクはBです。\nAランクまであと${200 - score}文字です。`;
+  } else if (score < 300) {
+    text = `あなたのランクはAです。\nSランクまであと${300 - score}文字です。`;
+  } else {
+    text = `あなたのランクはSです。\nおめでとうございます!`;
   }
- 
-  // 生成したメッセージと一緒に文字列を返す
   return `${score}文字打てました!\n${text}\n【OK】リトライ / 【キャンセル】終了`;
 };
 
-// ゲームを終了
+// ゲームを終了（★タイムアップ表示→10ms後に判定）
 const gameOver = id => {
   clearInterval(id);
 
-  const result = confirm(rankCheck(score));
+  // 指定：タイピングエリア（グレー部分）に表示
+  typedfield.textContent   = '';
+  untypedfield.textContent = 'タイムアップ！';
 
-  // OKボタンをクリックされたらリロードする
-  if(result == true) {
-    window.location.reload();
-  }
+  setTimeout(() => {
+    const result = confirm(rankCheck(score));
+    if (result === true) {
+      window.location.reload();
+    }
+  }, 10);
 };
 
 // カウントダウンタイマー
 const timer = () => {
-
-  // タイマー部分のHTML要素（p要素）を取得する
-  let time = count.textContent;
+  let time = Number(count.textContent);
 
   const id = setInterval(() => {
-
-    // カウントダウンする
     time--;
     count.textContent = time;
 
-    // カウントが0になったらタイマーを停止する
-    if(time <= 0) {
+    if (time <= 0) {
       gameOver(id);
     }
   }, 1000);
 };
 
-const scoreDisplay = document.getElementById('score-display');
-
-const keypress = e => {
-  if(e.key !== untyped.substring(0, 1)) {
-    wrap.classList.add('mistyped');
-    setTimeout(() => {
-      wrap.classList.remove('mistyped');
-    }, 100);
-    return;
-  }
-
-  score++;
-  scoreDisplay.textContent = score; // 数字だけ表示
-
-  typed += untyped.substring(0, 1);
-  untyped = untyped.substring(1);
-  typedfield.textContent = typed;
-  untypedfield.textContent = untyped;
-
-  if(untyped === '') {
-    createText();
-  }
-};
-
 // ゲームスタート時の処理
 start.addEventListener('click', () => {
+  // リセット
+  score = 0;
+  scoreDisplay.textContent = score; // ★開始時に0で初期化
 
-  // カウントダウンタイマーを開始する
+  // カウントダウン・初期テキスト
   timer();
-
-  // ランダムなテキストを表示する
   createText();
 
-  // 「スタート」ボタンを非表示にする
+  // スタートボタンを非表示
   start.style.display = 'none';
 
-  // キーボードのイベント処理
-  document.addEventListener('keypress', keyPress);
+  // キーボードイベント（★一度だけ登録）
+  document.addEventListener('keypress', keyPress, { once: false });
 });
 
+// 初期表示
 untypedfield.textContent = 'スタートボタンで開始';
-
-
